@@ -12,6 +12,30 @@
                 </div>
                 <div class="swiper-pagination"></div>
               </div>
+              <!-- 手机类型数据 -->
+              <div class="product-wrap">
+                <div class="product-block" v-for = "item in indexshop">
+                    <div class="top">
+                        {{ item.category.msg }}
+                    </div>
+                    <div class="content clear bgwhite">
+                        <div class="p-list" v-for="message in item.category.product">
+                            <div class="pic">
+                                <img :src="message.GoodsImage" alt="" />
+                            </div>
+                            <div class="info">
+                                <div class="name">
+                                    {{ message.GoodsName }}
+                                </div>
+                                <div class="msg">
+                                    数量：{{ message.GoodsNum }}
+                                    价格：{{ message.GoodsPrice }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+              </div>
           </div>
         </div>
         <Footers />
@@ -26,7 +50,8 @@ export default {
   name:'index',
   data() {
     return {
-      bannerlist: []
+      bannerlist: [],
+      indexshop: []
     }
   },
   components:{
@@ -34,6 +59,7 @@ export default {
     Footers
   },
   mounted() {
+    // 调用轮播图数据图片的方法
     this.getBannerList();
     // 自动轮播
     setTimeout(() => {
@@ -46,18 +72,30 @@ export default {
         autoplay: {
             stopOnLastSlide:true,
         },
-
+        loop:true,
       });
     },300)
+    // 调用数据方法
+    this.getIndexShop();
   },
   methods: {
-    // 获取轮播图列表
+    // 获取轮播图数据图片的方法
     getBannerList() {
       const that = this;
       this.$http.get('/api/bannerdata').then(function(res){
         console.log(res);
         console.log(res.body.data);
         this.bannerlist = res.body.data;
+      })
+    },
+    // 首页数据
+    getIndexShop() {
+      const that = this;
+      this.$http.get('/api/indexshop').then(function(res){
+        console.log(res);
+        console.log(res.body.data);
+        this.indexshop = res.body.data;
+        console.log(this.indexshop);
       })
     },
   }
@@ -71,5 +109,54 @@ export default {
 }
 .swiper-list img {
     width: 100%;
+}
+.main{
+  
+}
+.product-block {
+    width: 100%;
+    margin-top: 10px;
+}
+.product-block .top {
+    height: 1rem;
+    line-height: 1.2rem;
+    text-align: left;
+    padding: 0 3%;
+    position: relative;
+    font-size: .4rem;
+}
+.bgwhite { background: #fff; }
+.product-block .top:before {
+    content: '';
+    display: inline-block;
+    position: absolute;
+    height: .4rem;
+    width: 3px;
+    left: 0;
+    top: .4rem;
+    color: #2c3e50;
+    background: #2c3e50;
+}
+.p-list {
+    width: 50%;
+    float: left;
+    padding: 3%;
+    border-left: 1px solid #eee;
+}
+.p-list .pic, .p-list .pic img {
+    width: 100%;
+}
+.product-block .p-list:nth-child(odd) { border-left: 0px; }
+.p-list .info {
+    text-align: center;
+    padding-top: 10px;
+}
+.p-list .info .name {
+    font-size: .4rem;
+    line-height: .7rem;
+    color: #000;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
 }
 </style>
