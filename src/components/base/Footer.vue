@@ -1,20 +1,20 @@
 <template lang="html">
   <footer class="footer">
       <ul class="toolbar flexbox">
-          <router-link :to="{ name: 'Index' }" class="flist flex-1">
+          <router-link :to="{ name: 'Index' }" class="flist flex-1" tag="li" :class="{barActive:$route.path == '/'}">
             <i class="icon index"></i>
             <p class="txt">首页</p>
           </router-link>
-          <router-link :to="{ name: 'List' }" class="flist flex-1">
+          <router-link :to="{ name: 'List' }" class="flist flex-1" tag="li" :class="{barActive:$route.path == '/list'}">
             <i class="icon list"></i>
             <p class="txt">列表</p>
           </router-link>
-          <router-link :to="{ name: 'Cart' }" class="flist flex-1">
+          <router-link :to="{ name: 'Cart' }" class="flist flex-1" tag="li" :class="{barActive:$route.path == '/cart'}">
             <i class="icon cart"></i>
             <p class="txt">购物车</p>
             <i class="corner">{{cartLen}}</i>
           </router-link>
-          <router-link to="/user/index" class="flist flex-1">
+          <router-link to="/user/index" class="flist flex-1" tag="li" :class="{barActive:$route.path == '/user/index'}">
             <i class="icon user"></i>
             <p class="txt">我的</p>
           </router-link>
@@ -29,6 +29,9 @@ export default {
     return {
       cartLen:0,
     }
+  },
+  mounted() {
+      this.cartLen = this.$store.state.CartList.length;
   },
 }
 </script>

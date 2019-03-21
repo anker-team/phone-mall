@@ -19,7 +19,7 @@
                         {{ item.category.msg }}
                     </div>
                     <div class="content clear bgwhite">
-                        <div class="p-list" v-for="message in item.category.product">
+                        <div class="p-list" v-for="message in item.category.product" @click="goDetail(message.CategoryId)">
                             <div class="pic">
                                 <img :src="message.GoodsImage" alt="" />
                             </div>
@@ -98,6 +98,17 @@ export default {
         console.log(this.indexshop);
       })
     },
+    // 手机详情页
+    goDetail(id) {
+       console.log(id);
+       console.log(this.$router.push);
+       this.$router.push({
+         path: '/detail',
+         query: {
+           id: id
+         }
+       })
+    }
   }
 }
 </script>
@@ -111,7 +122,7 @@ export default {
     width: 100%;
 }
 .main{
-  
+
 }
 .product-block {
     width: 100%;

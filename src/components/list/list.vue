@@ -16,7 +16,7 @@
                     <div class="list-content">
                         <transition name="fade">
                             <div v-if="list_transition">
-                                <div class="pdt-list" v-for="item in curr_list">
+                                <div class="pdt-list" v-for="item in curr_list" v-on:click="listLink(item.id)">
                                     <div class="pic">
                                         <img :src="item.img" alt="">
                                     </div>
@@ -78,7 +78,15 @@ export default {
        setTimeout(function(){
          me.list_transition = true;
        },300)
-    }
+    },
+    listLink(id) {
+        this.$router.push({
+          path: '/detail',
+          query: {
+            id: id
+          }
+        })
+    },
   }
 }
 </script>

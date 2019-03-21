@@ -2,12 +2,12 @@
     <div class="" id="CartList">
         <div class="ischeck">
             <div class="c-check">
-                <input type="checkbox" name="" value="">
-                <label for=""></label>
+                <input type="checkbox" :id="'cart' + cartMessage.id" checked v-on:change="checkHanld" ref="cartinput" />
+                <label :for="'cart' + cartMessage.id"></label>
             </div>
         </div>
         <div class="pic">
-            <router-link :to="{ name: '', params: {} }">
+            <router-link :to="{ path: '/detail', query: {id:cartMessage.id} }">
               <img :src="cartMessage.img" alt="">
             </router-link>
         </div>
@@ -22,17 +22,17 @@
                 {{cartMessage.spec}}
             </div>
             <div class="spec-num">
-                <span>数量：{{cartMessage.num}}</span>
-                <div class="num-editor">
+                <span v-if="!isEditor">数量：{{cartMessage.num}}</span>
+                <div class="num-editor" v-if="isEditor">
                     <div class="numetr">
-                        <span class="reduce">-</span>
+                        <span class="reduce" v-on:click="reduceNum()">-</span>
                         <input type="text" v-model="cartMessage.num" />
-                        <span class="add">+</span>
+                        <span class="add" v-on:click="addNum()">+</span>
                     </div>
                 </div>
             </div>
             <div class="ctrl">
-                <span class="editor-btn">{{editorBtnText}}</span>
+                <span class="editor-btn" v-on:click="editorInfo()">{{editorBtnText}}</span>
             </div>
         </div>
     </div>
@@ -43,12 +43,43 @@ export default {
   name:'CartList',
   props: {
     cartMessage:Object,
+    indexNum:Number,
+  },
+  mounted() {
+    console.log(this.indexNum)
   },
   data() {
     return {
-      editorBtnText:'编辑'
+      editorBtnText:'编辑',
+      isEditor: false
     }
   },
+  methods: {
+    editorInfo() {
+      this.isEditor = !this.isEditor;
+      this.editorBtnText = this.isEditor ? '完成' : '编辑';
+    },
+    checkHanld() {
+      if(this.$refs.cartinput.checked){
+        // 把对应的商品的isCheck属性设置为true,代表选中
+        this.$store.state.CartList[this.indexNum].isCheck = true;
+
+      }else{
+        // 把对应的商品的isCheck属性设置为false,代表没选中
+        this.$store.state.CartList[this.indexNum].isCheck = false;
+      }
+    },
+    reduceNum() {
+      if(this.$store.state.CartList[this.indexNum].num > 1) {
+        this.$store.state.CartList[this.indexNum].num--;
+      }
+    },
+    addNum() {
+      if(this.$store.state.CartList[this.indexNum].num < 10) {
+        this.$store.state.CartList[this.indexNum].num++;
+      }
+    },
+  }
 }
 </script>
 
