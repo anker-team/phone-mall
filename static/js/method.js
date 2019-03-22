@@ -6,6 +6,7 @@ var Base = {
             if(newobj.hasOwnProperty(key) && obj.hasOwnProperty(key)){
                 obj[key]=newobj[key];
             }
+
         }
         return obj;
     }

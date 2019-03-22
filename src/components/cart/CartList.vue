@@ -63,22 +63,36 @@ export default {
       if(this.$refs.cartinput.checked){
         // 把对应的商品的isCheck属性设置为true,代表选中
         this.$store.state.CartList[this.indexNum].isCheck = true;
-
+        // 调用父组件的方法
+        this.$emit('increment','1');
       }else{
         // 把对应的商品的isCheck属性设置为false,代表没选中
         this.$store.state.CartList[this.indexNum].isCheck = false;
+        // 调用父组件的方法
+        this.$emit('increment','0');
       }
     },
     reduceNum() {
       if(this.$store.state.CartList[this.indexNum].num > 1) {
         this.$store.state.CartList[this.indexNum].num--;
       }
+      this.$emit('increment');
     },
     addNum() {
       if(this.$store.state.CartList[this.indexNum].num < 10) {
         this.$store.state.CartList[this.indexNum].num++;
       }
+      this.$emit('increment');
     },
+    // 取消全选
+    cancelAllCheck() {
+        this.$refs.cartinput.checked = false;
+    },
+    // 全选
+    inAllCheck() {
+        this.$refs.cartinput.checked = true;
+    }
+
   }
 }
 </script>

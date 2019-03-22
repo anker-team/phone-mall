@@ -5,6 +5,8 @@ import Index from '@/components/index/index.vue'
 import List from '@/components/list/list.vue'
 import Cart from '@/components/cart/cart.vue'
 import Detail from '@/components/detail/detail.vue'
+import Order from '../components/order/order.vue';
+
 
 import User from '@/components/user/user.vue'
 import UserIndex from '@/components/user/userindex.vue'
@@ -32,6 +34,11 @@ export default new Router({
         path: '/detail',
         name: 'Detail',
         component: Detail
+    },
+    {
+        path: '/order',
+        name: 'Order',
+        component:  Order
     },
     {
         path: '/user',
