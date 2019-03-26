@@ -14,14 +14,14 @@
                     </div>
                 </div>
                 <div class="block-wrap mt10">
-                    <router-link :to="{ name: '', params: {} }" class="list-block hasarrow">
+                    <router-link to="/user/order" tag="div" class="list-block hasarrow">
                         <div class="left">
                             我的订单
                         </div>
                         <div class="right">
                         </div>
                     </router-link>
-                    <router-link :to="{ name: '', params: {} }" class="list-block hasarrow">
+                    <router-link to="/user/useraddress" tag="div" class="list-block hasarrow">
                         <div class="left">
                             我的地址
                         </div>

@@ -5,7 +5,7 @@
         </header-ctr>
         <div class="main order-main">
             <div class="order-wrap">
-                <div class="address-block">
+                <div class="address-block" v-on:click="isCheckAddress = !isCheckAddress">
                     <div class="adricon">
                     </div>
                     <div class="adr">
@@ -64,13 +64,13 @@
                 <div class="shade" v-if="isCheckAddress"></div>
             </transition>
             <transition name="slideUp">
-                <div class="choose-address-wrap">
+                <div class="choose-address-wrap" v-if="isCheckAddress">
                     <div class="choose-top">
                       <span>请选择地址</span>
                       <span class="close" v-on:click="isCheckAddress = !isCheckAddress">X</span>
                     </div>
                     <div class="choose-container">
-                        <div class="choose-item active" v-for="(item,index) in addressList" v-if="item.isDefault">
+                        <div class="choose-item active" v-on:click="checkAddress(item.id,index)" v-for="(item,index) in addressList" v-if="item.isDefault">
                           <div class="adr">{{item.text}}</div>
                           <div class="info">
                               <span>{{item.user_name}}</span>
@@ -78,7 +78,7 @@
                           </div>
                           <div class="check"></div>
                         </div>
-                        <div class="choose-item" v-else>
+                        <div class="choose-item" v-on:click="checkAddress(item.id,index)" v-else>
                           <div class="adr">{{item.text}}</div>
                           <div class="info">
                               <span>{{item.user_name}}</span>
@@ -110,6 +110,7 @@ export default {
         address: '',
         cartlist: this.$store.state.checkedProduct,
         addressList: this.$store.state.address,
+        isCheckAddress:false,
     }
   },
   components: {
@@ -153,6 +154,25 @@ export default {
 
   methods: {
     // 选择地址
+    checkAddress(id,inx){
+      console.log(id);
+      console.log(inx);
+      this.$store.state.address.forEach(function(value){
+        console.log(value);
+        if(value.id == id){
+          value.isDefault = true;
+        } else {
+          value.isDefault = false;
+        }
+      });
+      this.address = this.$store.state.address[inx];
+    },
+    // 添加地址
+    addAddress(){
+      this.$router.push({
+        path:'/address'
+      })
+    },
   },
 }
 </script>

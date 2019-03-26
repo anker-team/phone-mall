@@ -60,6 +60,9 @@
             </div>
         </div>
 
+        <!-- 调用layer弹框组件 -->
+        <layer ref="layer"></layer>
+
         <!-- 规格选择弹出 -->
         <!-- 遮罩层 -->
         <transition name="fade">
@@ -85,7 +88,7 @@
                         </div>
                         <div class="txt">
                             <span class="spec" v-for="item in spec.data">
-                              <input type="radio" :id="'product' + item.id" :name="item.type" :value="item.text" :data-price="item.price">
+                              <input type="radio" :id="'product' + item.id" :name="item.type" :value="item.text" :data-price="item.price" v-on:change="chooseSpec(item.type,item.text,item.price)">
                               <label :for="'product' + item.id">{{item.text}}</label>
                             </span>
                         </div>
@@ -111,6 +114,7 @@
 <script>
 import HeaderCtr from '../base/HeaderCtr.vue'
 import Swiper from '../../../static/js/swiper.min.js'
+import Layer from '../base/Layer.vue'
 export default {
   name: 'detail',
   data() {
@@ -122,12 +126,16 @@ export default {
         productSpec: this.$store.state.productSpec,     // 产品规格
         productNum: 1,           // 商品数量
         isCoverShow: false,      // 是否弹出规格选择
+        isCheckSpec: false,      // 是否已选择规格
+        counter:{},              // 已选择的规格
     }
   },
   components: {
     HeaderCtr,
+    Layer
   },
   mounted() {
+    console.log(this.productSpec);
     this.getMessage();
     setTimeout(() => {
       const swiper = new Swiper('.swiper-container',{
@@ -151,6 +159,7 @@ export default {
           console.log(res);
           console.log(this.productid);
           this.productdata = res.body.data;
+          console.log(this.productdata);
       })
     },
     // 数量减少
@@ -168,11 +177,92 @@ export default {
 
     // 加入购物车
     addCart() {
-
+      let me = this;
+      if(!this.isCheckSpec){
+        this.isCoverShow = true;
+      }else{
+        this.$store.state.CartList.push(this.groupProduct());
+        this.$refs.layer.openLayer({
+          html:'成功加入购物车',
+          time:1000,
+          callback:function(){
+            // 提交商品信息，跳转到购物车页面
+            me.$router.push({
+              path:'/cart'
+            })
+          }
+        })
+      }
     },
     // 立即购买
     buyProduct() {
+      if(!this.isCheckSpec){
+        this.isCoverShow = true;
+      }else{
+        // 调用mapMutations中的方法来修改state，即清空默认的订单列表商品
+        this.$store.state.checkedProduct = [];
+        // 把立即购买的商品赋值给checkedProduct，即默认的订单列表只有这个立即购买的商品
+        this.$store.state.checkedProduct.push(this.groupProduct());
+        // 提交商品信息，跳转到订单信息页面
+        this.$router.push({
+          path: '/order'
+        })
+      }
+    },
+    // 规则选择onchange事件，如果选择了则counter push
+    // 最后通过判断productSpec的length与counter的length比较，如果相等则已选择好了规格
+    chooseSpec(type,text,price){
+        // console.log(type);
+        // console.log(text);
+        // console.log(price);
+        // 保存选择的规则名称，设其值为1代表已选该规格
+        // obj为规格的类型，txt选择的规格的value，price为选择的规格对应的价格
+        this.counter[type] = text;
+        console.log(this.counter);
+        if(!this.isCheckSpec){
+          if(this.getObjLength(this.counter) == this.productSpec.length){
+            this.isCheckSpec = true; // 把isCheckSpec设为true
+            this.specText = '';      // 选中的规格内容
+            for(var i in this.counter){
+                this.specText += this.counter[i] + ' ';
+            }
+          }
+        }
 
+        // 价格同步
+        if (price) {
+          this.productdata.price = price
+        }
+        // 规格value同步
+        this.CheckSpecValue = '';
+        for(var i in this.counter){
+          this.CheckSpecValue += this.counter[i] + ' ';
+        }
+    },
+
+    // 获取对象的length
+    getObjLength(obj){
+        var total = 0;
+        for (var i in obj) {
+          total++;
+          console.log(i);
+        }
+        console.log(total);
+        return total;
+    },
+
+    // 组合商品对象
+    groupProduct(){
+      let obj = {};
+      var new_time = new Date();
+      obj.id = new_time.getFullYear().toString() + (new_time.getMonth() + 1).toString() + new_time.getDate().toString() + new_time.getHours().toString() + new_time.getMinutes().toString() + new_time.getSeconds().toString();
+      obj.img = this.productdata.imgdata[0];
+      obj.isCheck = true;
+      obj.name = this.productdata.title;
+      obj.price = this.productdata.price;
+      obj.spec = this.specText;
+      obj.num = this.productNum;
+      return obj;
     },
   },
 }
